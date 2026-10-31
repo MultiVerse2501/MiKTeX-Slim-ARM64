@@ -27,7 +27,7 @@ portable/            the pack script and the two launch scripts stored in the zi
 
 ## Use
 
-Build the zip with [BUILD.md](BUILD.md), or take the zip from a release. Its name is `miktex-portable-arm64-` plus the MiKTeX version it was built from, currently `miktex-portable-arm64-26.5.zip`. In Explorer, right-click it and choose **Extract All**, into any normal folder. The window shows `miktex-portable.cmd`, `bootstrap-portable.cmd`, `version.txt`, `NOTICE.md`, and `texmfs`. `version.txt` is that same MiKTeX version.
+Build the zip with [BUILD.md](BUILD.md), or take the zip from a release. Its name is `miktex-portable-arm64-` plus this project's version and the MiKTeX version it was built from, currently `miktex-portable-arm64-v0.1-26.5.zip`. In Explorer, right-click it and choose **Extract All**, into any normal folder. The window shows `miktex-portable.cmd`, `bootstrap-portable.cmd`, `version.txt`, `LICENSE`, `NOTICE.md`, and `texmfs`. `version.txt` is `v0.1-26.5`.
 
 Run `miktex-portable.cmd`.
 

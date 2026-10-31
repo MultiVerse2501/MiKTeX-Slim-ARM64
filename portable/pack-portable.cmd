@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions
 rem Build the portable zip from the ARM64 sandbox binaries.
-rem The zip version is the MiKTeX version this tree was compiled with.
+rem The zip name is miktex-portable-arm64-v<version>-<miktex-tag>.
 rem Linker leftovers (.pdb .ilk .lib .exp) stay out. Every PE must be ARM64.
 rem The Qt console and its DLL closure are refused.
 
@@ -33,8 +33,15 @@ if not defined VCToolsRedistDir (
   exit /b 1
 )
 
+call :pin version PIN_VERSION
+if errorlevel 1 exit /b 1
 call :pin miktex-tag PIN_MIKTEX
 if errorlevel 1 exit /b 1
+echo %PIN_VERSION%| findstr /r "^[0-9][0-9.][0-9.]*$" >nul
+if errorlevel 1 (
+  echo versions.txt version "%PIN_VERSION%" is not a dotted numeric version.
+  exit /b 1
+)
 call :pin biber PIN_BIBER
 if errorlevel 1 exit /b 1
 call :pin ghostscript PIN_GS
@@ -79,8 +86,9 @@ set "ICU_IO=icuio%ICU_MAJOR%.dll"
 set "ICU_TU=icutu%ICU_MAJOR%.dll"
 set "ICU_UC=icuuc%ICU_MAJOR%.dll"
 
-set "ZIP=%HERE%\dist\miktex-portable-arm64-%MIKTEX_VER%.zip"
-echo Staging MiKTeX %MIKTEX_VER% into "%STAGE%"
+set "RELEASE=v%PIN_VERSION%-%MIKTEX_VER%"
+set "ZIP=%HERE%\dist\miktex-portable-arm64-%RELEASE%.zip"
+echo Staging %RELEASE% into "%STAGE%"
 if exist "%STAGE%" rmdir /s /q "%STAGE%"
 if exist "%ZIP%" del /f /q "%ZIP%"
 mkdir "%BIN%"
@@ -260,14 +268,20 @@ copy /y "%HERE%\bootstrap-portable.cmd" "%STAGE%\bootstrap-portable.cmd" >nul
 if errorlevel 1 exit /b 1
 copy /y "%HERE%\miktex-portable.cmd" "%STAGE%\miktex-portable.cmd" >nul
 if errorlevel 1 exit /b 1
+if not exist "%REPO%\LICENSE" (
+  echo LICENSE was not found at the repository root.
+  exit /b 1
+)
+copy /y "%REPO%\LICENSE" "%STAGE%\LICENSE" >nul
+if errorlevel 1 exit /b 1
 copy /y "%REPO%\NOTICE.md" "%STAGE%\NOTICE.md" >nul
 if errorlevel 1 exit /b 1
->"%STAGE%\version.txt" echo %MIKTEX_VER%
+>"%STAGE%\version.txt" echo %RELEASE%
 
 rem Store names as "texmfs/..." . Archiving "." stores "./...", which Explorer
 rem rejects: the window is empty and Extract All reports the archive invalid.
 echo Writing "%ZIP%"
-tar.exe -a -cf "%ZIP%" -C "%STAGE%" bootstrap-portable.cmd miktex-portable.cmd version.txt NOTICE.md texmfs
+tar.exe -a -cf "%ZIP%" -C "%STAGE%" bootstrap-portable.cmd miktex-portable.cmd version.txt LICENSE NOTICE.md texmfs
 if errorlevel 1 (
   echo tar failed.
   exit /b 1
