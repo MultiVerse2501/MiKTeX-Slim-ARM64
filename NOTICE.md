@@ -1,6 +1,6 @@
 # Notices
 
-MiKTeX Slim is an unofficial native ARM64 build of MiKTeX. It is not a release from [MiKTeX.org](https://miktex.org/). MiKTeX is a collection of independently licensed packages. The upstream copying conditions are `COPYING.md` in the MiKTeX source. This project does not vendor that source. The ARM64 changes are `patches/miktex-arm64.patch`, applied to the MiKTeX commit in [versions.txt](versions.txt).
+MiKTeX Slim is an unofficial native ARM64 build of MiKTeX. It is not a release from [MiKTeX.org](https://miktex.org/). The files written for this repository, including `patches/miktex-arm64.patch`, are under the GNU General Public License, version 3 or any later version (`LICENSE`). MiKTeX is a collection of independently licensed packages. The upstream copying conditions are `COPYING.md` in the MiKTeX source. This project does not vendor that source. The ARM64 changes are `patches/miktex-arm64.patch`, applied to the MiKTeX commit in [versions.txt](versions.txt).
 
 Biber and the PAR::Packer toolchain keep the upstream licenses recorded in their source archives. The packed `biber.exe` embeds that Perl runtime.
 

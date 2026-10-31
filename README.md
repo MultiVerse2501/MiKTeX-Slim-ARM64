@@ -2,13 +2,16 @@
 
 Unofficial native ARM64 MiKTeX for Windows 11 on Arm. A small core installs the engines, Biber, and Ghostscript. TeX packages download the first time a document needs them. The program you copy to another PC is a portable zip. This is not a release from [MiKTeX.org](https://miktex.org/).
 
-The Qt console and the installer are left out. Pins for MiKTeX, vcpkg, ICU, Boost, Biber, and Ghostscript are in [versions.txt](versions.txt). The ARM64 changes to MiKTeX are [patches/miktex-arm64.patch](patches/miktex-arm64.patch). Third-party licenses are in [NOTICE.md](NOTICE.md). Reproducing the zip is [BUILD.md](BUILD.md).
+The Qt console and the installer are left out. Pins for MiKTeX, vcpkg, ICU, Boost, Biber, and Ghostscript are in [versions.txt](versions.txt). The ARM64 changes to MiKTeX are [patches/miktex-arm64.patch](patches/miktex-arm64.patch). Reproducing the zip is [BUILD.md](BUILD.md).
+
+The files in this repository are released under the GNU General Public License, version 3 or any later version ([LICENSE](LICENSE)). The Ghostscript patches under `recipes/ghostscript/patches/` stay under the GNU Affero General Public License, version 3. Third-party licenses for the programs in the zip are in [NOTICE.md](NOTICE.md).
 
 ## Layout
 
 ```
 README.md            purpose, layout, and how to run the zip
 BUILD.md             how to build the zip
+LICENSE              GPL-3.0-or-later for the files in this repository
 NOTICE.md            upstream licenses
 versions.txt         pinned commits and package versions
 miktex-env.cmd       ARM64 Visual Studio, vcpkg, and MSYS2
