@@ -1,0 +1,9 @@
+{
+  "biber": {
+    "version": "2.22",
+    "archive": "biber-v2.22.tar.gz",
+    "url": "https://codeload.github.com/plk/biber/tar.gz/refs/tags/v2.22",
+    "sha256": "82adcff9e71b4fc02ad6132f9ccd79137ad390e4d3392c7f681a85246c0cdc01",
+    "extract_dir": "biber-2.22"
+  }
+}

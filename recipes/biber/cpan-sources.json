@@ -1,0 +1,45 @@
+{
+  "_comment": "PAR::Packer toolchain for freezing Biber into one exe. Built into work/local only; MSYS2 Perl is untouched. Order matters: deps first, PAR-Packer last.",
+  "_order": [
+    "Getopt-ArgvFile-1.11",
+    "PAR-Dist-0.53",
+    "ExtUtils-Depends-0.8002",
+    "Archive-Zip-1.68",
+    "Module-ScanDeps-1.37",
+    "PAR-1.021",
+    "Encode-JIS2K-0.05",
+    "PAR-Packer-1.064"
+  ],
+  "Archive-Zip-1.68": {
+    "url": "https://cpan.metacpan.org/authors/id/P/PH/PHRED/Archive-Zip-1.68.tar.gz",
+    "sha256": "984e185d785baf6129c6e75f8eb44411745ac00bf6122fb1c8e822a3861ec650"
+  },
+  "Module-ScanDeps-1.37": {
+    "url": "https://cpan.metacpan.org/authors/id/R/RS/RSCHUPP/Module-ScanDeps-1.37.tar.gz",
+    "sha256": "1f5e119cade1466c39c71e5bc35a8d4f4e672635db03d79a5a0dcf08c4e2b5a3"
+  },
+  "PAR-1.021": {
+    "url": "https://cpan.metacpan.org/authors/id/R/RS/RSCHUPP/PAR-1.021.tar.gz",
+    "sha256": "732fcfd3c1ba8bb314d7df92d14209e066d19b4c45f8451e58d684f0ddfe6bf3"
+  },
+  "Encode-JIS2K-0.05": {
+    "url": "https://cpan.metacpan.org/authors/id/D/DA/DANKOGAI/Encode-JIS2K-0.05.tar.gz",
+    "sha256": "022f1f3d6869742b3718c27bfcca6f7c96aceffac0a2267d140bbf653d7c0ac2"
+  },
+  "PAR-Packer-1.064": {
+    "url": "https://cpan.metacpan.org/authors/id/R/RS/RSCHUPP/PAR-Packer-1.064.tar.gz",
+    "sha256": "0fc063e448e34f7cb5c69c6be5b2258f7150187b33140dedabd53a2c34ca3cba"
+  },
+  "Getopt-ArgvFile-1.11": {
+    "url": "https://cpan.metacpan.org/authors/id/J/JS/JSTENZEL/Getopt-ArgvFile-1.11.tar.gz",
+    "sha256": "3709aa513ce6fd71d1a55a02e34d2f090017d5350a9bd447005653c9b0835b22"
+  },
+  "PAR-Dist-0.53": {
+    "url": "https://cpan.metacpan.org/authors/id/R/RS/RSCHUPP/PAR-Dist-0.53.tar.gz",
+    "sha256": "04cbc81e786968f9a4109ad6c2f9b81e879ac0c6b6080a9d217443b61dfd2498"
+  },
+  "ExtUtils-Depends-0.8002": {
+    "url": "https://cpan.metacpan.org/authors/id/E/ET/ETJ/ExtUtils-Depends-0.8002.tar.gz",
+    "sha256": "02b9a46450050ce19b325b23e46bb4ec644229d7f2d95044f67a86d8efacdc29"
+  }
+}

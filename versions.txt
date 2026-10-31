@@ -1,0 +1,9 @@
+miktex=76d1b3bd2b69857f30133c62ff9ab66c83dcf80f
+miktex-tag=26.5
+vcpkg=817892b0ecbc6af994dd6df999c73faf795adbf2
+icu=78.3
+icu-triplet=arm64-windows
+boost-locale=1.92
+boost-triplet=arm64-windows-static-md
+biber=2.22
+ghostscript=10.08.0

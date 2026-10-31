@@ -1,0 +1,9 @@
+upstream/
+build/
+recipes/biber/work/
+recipes/biber/dist/
+recipes/ghostscript/work/
+recipes/ghostscript/dist/
+portable/dist/
+__pycache__/
+*.pyc
