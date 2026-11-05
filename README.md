@@ -28,11 +28,11 @@ portable/            the pack and smoke-test scripts, and the launch and registe
 
 ## Use
 
-Build the zip with [BUILD.md](BUILD.md), or take the zip from a release. A packed zip can be exercised end to end with `portable\smoke-test.cmd`, which extracts, bootstraps, and compiles the checks below. Its name is `miktex-portable-arm64-` plus this project's version and the MiKTeX version it was built from, currently `miktex-portable-arm64-v0.1-26.5.zip`. In Explorer, right-click it and choose **Extract All**, into any normal folder. The window shows `miktex-portable.cmd`, `bootstrap-portable.cmd`, `version.txt`, `LICENSE`, `NOTICE.md`, and `texmfs`. `version.txt` is `v0.1-26.5`.
+Build the zip with [BUILD.md](BUILD.md), or take the zip from a release. A packed zip can be exercised end to end with `portable\smoke-test.cmd`, which extracts, bootstraps, and compiles the checks below. Its name is `miktex-portable-arm64-` plus this project's version and the MiKTeX version it was built from, currently `miktex-portable-arm64-v0.1-26.5.zip`. In Explorer, right-click it and choose **Extract All**, into any normal folder. The window shows `miktex-portable.cmd`, `bootstrap-portable.cmd`, `register-portable.cmd`, `unregister-portable.cmd`, `user-path.ps1`, `version.txt`, `LICENSE`, `NOTICE.md`, and `texmfs`. `version.txt` is `v0.1-26.5`.
 
 Run `miktex-portable.cmd`.
 
-The first run needs a network connection. It downloads the package list, installs the configuration packages, and builds `pdftex`, `pdflatex`, `xetex`, `xelatex`, `luatex`, and `lualatex`. A command window titled **MiKTeX ARM64** then opens. Its `PATH` is `texmfs\install\miktex\bin\arm64` plus the Windows system directories.
+The first run needs a network connection. It downloads the package list, installs the configuration packages, and builds `pdftex`, `pdflatex`, `xetex`, `xelatex`, `luatex`, and `lualatex`. Setup then asks once whether to add the toolkit to your user `Path` so every shell can call it; skipping is fine and changes nothing. A command window titled **MiKTeX ARM64** then opens. Its `PATH` is `texmfs\install\miktex\bin\arm64` plus the Windows system directories.
 
 ```bat
 notepad hello.tex
@@ -50,7 +50,7 @@ Hello ARM64.
 
 Later runs of `miktex-portable.cmd` open the prompt directly, once both `texmfs\install\miktex\config\miktexstartup.ini` and `texmfs\install\miktex\config\bootstrap-complete.txt` exist. If the first run stops before the marker file exists, run `miktex-portable.cmd` again.
 
-The prompt keeps the toolkit to itself. To call `pdflatex`, `biber`, and the rest from any shell or build tool, run `register-portable.cmd` in the extracted folder once. It appends the bin directory to your user `Path` — no admin rights, the system `Path` is not touched, and the entry is recorded in `texmfs\registered-user-path.txt`. New terminals see the change immediately; open ones need a restart. `-Front` puts the entry first instead of last, ahead of any other TeX on the `Path`. `unregister-portable.cmd` removes the entry again.
+The prompt keeps the toolkit to itself. To call `pdflatex`, `biber`, and the rest from any shell or build tool, register the bin directory — either by answering yes at the end of the first-run setup, or later by running `register-portable.cmd` in the extracted folder. It appends the bin directory to your user `Path` — no admin rights, the system `Path` is not touched, and the entry is recorded in `texmfs\registered-user-path.txt`. New terminals see the change immediately; open ones need a restart. `-Front` puts the entry first instead of last, ahead of any other TeX on the `Path`. `unregister-portable.cmd` removes the entry again.
 
 Downloaded packages, font maps, and format files stay under `texmfs\config` and `texmfs\data`. Move or copy the whole extracted folder together; move it into its final place before the first run, because the bootstrap writes absolute paths into the tree's fontconfig configuration. The script sets `MIKTEX_COMMONSTARTUPFILE` and `MIKTEX_USERSTARTUPFILE` to this tree, so another MiKTeX install on the same PC does not take over the prompt.
 

@@ -1,7 +1,8 @@
 @echo off
 setlocal EnableExtensions
-rem Open a command prompt whose PATH is this portable ARM64 MiKTeX.
-rem The first launch runs bootstrap-portable.cmd. There is no Qt console.
+rem The setup entry: the first launch bootstraps the tree and offers an
+rem optional user Path registration; every launch opens a command prompt
+rem whose PATH is this portable ARM64 MiKTeX. There is no Qt console.
 rem A failure from Explorer pauses so the message stays on screen.
 
 set "ROOT=%~dp0"
@@ -27,6 +28,25 @@ if errorlevel 1 (
   echo Bootstrap failed.
   goto fail
 )
+
+:offer-register
+rem One-time offer during setup. Registration is optional and can also be
+rem done later with register-portable.cmd; an unanswered prompt defaults
+rem to no.
+set "REGISTER="
+set /p "REGISTER=Add the tools to your user Path, callable from any shell? [y/N] "
+if /i not "%REGISTER%"=="y" (
+  echo Skipped. register-portable.cmd does this later; unregister-portable.cmd undoes it.
+  goto launch
+)
+"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -ExecutionPolicy Bypass -File "%~dp0user-path.ps1" add
+if errorlevel 1 (
+  echo Registration failed. The prompt still opens; register-portable.cmd can retry later.
+  call :hold
+  goto launch
+)
+echo Registered. unregister-portable.cmd removes the entry again.
+goto launch
 
 :launch
 endlocal & set "PATH=%BIN%;%SystemRoot%\system32;%SystemRoot%" & set "MIKTEX_COMMONSTARTUPFILE=%STARTUP%" & set "MIKTEX_USERSTARTUPFILE=%STARTUP%" & start "MiKTeX ARM64" /D "%ROOT%" cmd /k
