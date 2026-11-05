@@ -40,7 +40,7 @@ cmake -S upstream\miktex -B build -G Ninja ^
 cmake --build build -- -k 0
 ```
 
-A finished tree has one `ninja -n` step left, the git-info stamp. Anything else still listed means the build is not done. `arch-scan.cmd` then prints `NON_ARM64=0` for every top-level `.exe` and `.dll` in `build\sandbox\miktex\bin\arm64`.
+A finished tree has one `ninja -n` step left, the git-info stamp. Anything else still listed means the build is not done. `arch-scan.cmd` then prints `NON_ARM64=0` for every top-level `.exe` and `.dll` in `build\sandbox\miktex\bin\arm64`. After the recipes, `coverage-scan.cmd` reads the package database that a portable bootstrap downloaded under `portable\dist\<run>\texmfs\data` and exits 0 with `MISSING=0` when every `bin/x64` file the official Windows packages ship is built, recipe-provided, pack-supplied, or on the documented exclusion list (see the README).
 
 ## Recipes and the zip
 

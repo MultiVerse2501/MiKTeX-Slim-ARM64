@@ -18,6 +18,7 @@ miktex-env.cmd       ARM64 Visual Studio, vcpkg, and MSYS2
 fetch-upstream.cmd   checks out the pinned MiKTeX and vcpkg commits
 link-boost-libs.cmd  libboost_ names for the vcpkg Boost libraries
 arch-scan.cmd        checks that sandbox binaries are ARM64
+coverage-scan.cmd    checks sandbox coverage against the official package database
 patches/             the ARM64 patch for the pinned MiKTeX commit
 recipes/             Biber and Ghostscript, which MiKTeX does not compile
 portable/            the pack script and the two launch scripts stored in the zip
@@ -55,4 +56,6 @@ Downloaded packages, font maps, and format files stay under `texmfs\config` and 
 
 ## Not included
 
-TeXworks, Yap, and the MFC setup wizard. A hosted `windows-arm64` package set, code signing, and CI. The Xindy Lisp image, the obsolete `biber-ms` fork, Info-ZIP, and LuaMetaTeX.
+TeXworks, Yap, and the MFC setup wizard, because the build leaves Qt and MFC out. A hosted `windows-arm64` package set, code signing, and CI. The Xindy Lisp image, the obsolete `biber-ms` fork, Info-ZIP, and LuaMetaTeX.
+
+The official 26.5 package database was checked to confirm the list. Biber and Ghostscript are the only programs it ships that this build does not compile, and the recipes cover both. The pack step supplies the runtime files the database lists that no build produces: the VC++ runtime from the Visual Studio redistributable and the ICU DLLs from vcpkg. The Xindy Lisp engine and image stay out because they would need an ARM64 CLISP build, which the TeX Live ARM64 project also skips; `tex2xindy` itself is built. Info-ZIP stays out because nothing in the main workflow runs it. MiKTeX 26.5 ships no ConTeXt, so LuaMetaTeX is parity with upstream, and ConTeXt users need the standalone distribution. `coverage-scan.cmd` repeats the check against a newer database.
