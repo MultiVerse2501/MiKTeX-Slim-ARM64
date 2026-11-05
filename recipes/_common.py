@@ -6,13 +6,13 @@ stage dispatcher behind ``build.py``. Component-specific logic stays in that
 component's directory.
 
 A new component is a directory under ``recipes/`` with a ``build.py`` that
-calls :func:`run_component` (see biber or ghostscript), a one-line
-``build.cmd``, and its stage scripts under ``scripts/``. List the component
-in ``COMPONENTS`` in ``recipes/build.py``.
+defines its stages as functions and calls :func:`run_component` (see biber or
+ghostscript), an optional ``prereqs.cmd``, and a one-line ``build.cmd``.
+List the component in ``COMPONENTS`` in ``recipes/build.py``.
 """
 from pathlib import Path
+from collections.abc import Callable
 import hashlib
-import importlib.util
 import json
 import os
 import re
@@ -136,65 +136,42 @@ def pe_record(path: Path, readobj: Path) -> dict:
     )
 
 
-def run_component(component: str, root: Path, stages: tuple, build: tuple,
-                  doc: str | None, example: str | None = None) -> None:
+def run_component(component: str, root: Path, stages: dict[str, Callable | str],
+                  build: tuple, doc: str | None, example: str | None = None) -> None:
     """Stage dispatcher for one component's ``build.py``.
 
-    ``stages`` is ``((name, filename), ...)`` under ``root/scripts`` and
+    ``stages`` maps a stage name to a stage function (called with the extra
+    command-line arguments) or to a ``.cmd`` filename relative to ``root``;
     ``build`` is the subset run with no argument; ``doc`` is the build.py
-    module docstring, shown by ``help``. ``.cmd`` stages run through cmd,
-    ``.py`` stages are loaded and called as ``main()`` with any extra
-    arguments left in ``sys.argv``.
+    module docstring, shown by ``help``.
     """
     require_python()
-    scripts = root / "scripts"
-    names = {name: filename for name, filename in stages}
-
-    def load_main(filename: str):
-        if str(scripts) not in sys.path:
-            sys.path.insert(0, str(scripts))
-        path = scripts / filename
-        module_name = component + "_stage_" + path.stem.replace("-", "_")
-        spec = importlib.util.spec_from_file_location(module_name, path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        return module.main
-
-    def run_stage(name: str, extra: list[str]) -> None:
-        filename = names[name]
-        print(f"=== {component} {name} ({filename}) ===", flush=True)
-        if filename.endswith(".cmd"):
-            completed = subprocess.run(["cmd", "/d", "/c", str(scripts / filename)], cwd=root)
-            if completed.returncode:
-                raise SystemExit(completed.returncode)
-            return
-        main = load_main(filename)
-        saved = sys.argv
-        sys.argv = [filename, *extra]
-        try:
-            result = main()
-        finally:
-            sys.argv = saved
-        if result:
-            raise SystemExit(result)
-
     argv = sys.argv[1:]
     if not argv or argv[0] == "build":
         selected, extra = list(build), []
     elif argv[0] == "all":
-        selected, extra = [name for name, _filename in stages], argv[1:]
-    elif argv[0] in names:
+        selected, extra = list(stages), argv[1:]
+    elif argv[0] in stages:
         selected, extra = [argv[0]], argv[1:]
     elif argv[0] in ("-h", "--help", "help"):
         print((doc or "").strip())
-        print("\nStages:", ", ".join(names))
+        print("\nStages:", ", ".join(stages))
         raise SystemExit(0)
     else:
-        raise SystemExit(f"Unknown stage {argv[0]!r}. Choose from: build, all, {', '.join(names)}")
+        raise SystemExit(f"Unknown stage {argv[0]!r}. Choose from: build, all, {', '.join(stages)}")
     if len(selected) > 1 and extra:
         message = "Pass stage options only when running one stage."
         if example:
             message += " Example: " + example
         raise SystemExit(message)
     for name in selected:
-        run_stage(name, extra)
+        print(f"=== {component} {name} ===", flush=True)
+        stage = stages[name]
+        if callable(stage):
+            result = stage(extra)
+            if result:
+                raise SystemExit(result)
+            continue
+        completed = subprocess.run(["cmd", "/d", "/c", str(root / stage)], cwd=root)
+        if completed.returncode:
+            raise SystemExit(completed.returncode)

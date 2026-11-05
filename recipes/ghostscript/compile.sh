@@ -2,7 +2,7 @@
 # Configure and build the pinned Ghostscript as a shared library with clangarm64.
 # Follows the MSYS2 CLANGARM64 flags used by abenori/texlive-2026-windows-arm64.
 set -euo pipefail
-ROOT=$(cd "$(dirname "$0")/.." && pwd)
+ROOT=$(cd "$(dirname "$0")" && pwd)
 cd "$ROOT"
 WINSYS=$(cygpath -u "${SYSTEMROOT:?}")/System32
 export PATH="/clangarm64/bin:/usr/bin:${WINSYS}"

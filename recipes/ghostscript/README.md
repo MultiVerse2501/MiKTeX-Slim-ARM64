@@ -6,16 +6,16 @@ The configure line and the shared-library make flags follow [abenori/texlive-202
 
 ## Layout
 
-| Stage | Script | Result |
+| Stage | Runs | Result |
 |---|---|---|
-| `prereqs` | `scripts/00-prereqs.cmd` | clangarm64 compiler, GNU make, and the Ghostscript libraries |
-| `fetch` | `scripts/01-fetch.py` | Hash-checked tarball in `work/downloads`, sources in `work/source` |
-| `build` | `scripts/02-build.py` | `work/source/sobin/gsc.exe` and `gsdll64.dll` |
-| `stage` | `scripts/03-stage.py` | `dist/mgs.exe`, `dist/gsdll64.dll`, and the DLL closure, all machine `0xAA64` |
-| `test` | `scripts/04-test.py` | `--version` is 10.08.0 and a small PostScript file becomes a PDF |
-| `install` | `scripts/05-install.py` | Those files copied into the MiKTeX bin, then the file-name database is refreshed |
+| `prereqs` | `prereqs.cmd` | clangarm64 compiler, GNU make, and the Ghostscript libraries |
+| `fetch` | `build.py` | Hash-checked tarball in `work/downloads`, sources in `work/source` |
+| `build` | `build.py` via `compile.sh` | `work/source/sobin/gsc.exe` and `gsdll64.dll` |
+| `stage` | `build.py` | `dist/mgs.exe`, `dist/gsdll64.dll`, and the DLL closure, all machine `0xAA64` |
+| `test` | `build.py` | `--version` is 10.08.0 and a small PostScript file becomes a PDF |
+| `install` | `build.py` | Those files copied into the MiKTeX bin, then the file-name database is refreshed |
 
-`work/` and `dist/` are created by the scripts and are not stored in git. Fetch records the tarball and patch hashes in `work/source/.extracted`. A different pin replaces that tree. An existing tree built before the stamp is kept and stamped, not rebuilt.
+`work/` and `dist/` are created by the stages and are not stored in git. Fetch records the tarball and patch hashes in `work/source/.extracted`. A different pin replaces that tree. An existing tree built before the stamp is kept and stamped, not rebuilt.
 
 ## Build
 
