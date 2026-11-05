@@ -2,7 +2,7 @@
 
 Builds a native `mgs.exe` so `miktex-rungs.exe` has an interpreter to run. The official package `miktex-ghostscript-bin-x64` is Ghostscript 9.25 and is tagged `windows-x64`, so this suite does not install it.
 
-The configure line and the shared-library make flags follow [abenori/texlive-2026-windows-arm64](https://github.com/abenori/texlive-2026-windows-arm64). That recipe installs `gswin64c.exe` for TeX Live. This one installs `mgs.exe`, the name `MIKTEX_GS_EXE` looks up. The DLL stays `gsdll64.dll`. Patches in `patches/` are the MSYS2 `mingw-w64-ghostscript` files pinned in `sources.lock.json`. `001-mingw-build.patch` keeps the `$(LDFLAGSAUX)` terms Ghostscript 10.08.0 uses on the mkromfs link lines.
+The configure line and the shared-library make flags follow [abenori/texlive-2026-windows-arm64](https://github.com/abenori/texlive-2026-windows-arm64). That recipe installs `gswin64c.exe` for TeX Live. This one installs `mgs.exe`, the name `MIKTEX_GS_EXE` looks up. The DLL stays `gsdll64.dll`. Unlike the TeX Live recipe, the build leaves Ghostscript's compile-inits on, so the interpreter carries its own Resource tree and runs without `GS_LIB`; the architecture-neutral `ghostscript` package supplies `Fontmap.MiKTeX` and the rest of `ghostscript/base`. Patches in `patches/` are the MSYS2 `mingw-w64-ghostscript` files pinned in `sources.lock.json`. `001-mingw-build.patch` keeps the `$(LDFLAGSAUX)` terms Ghostscript 10.08.0 uses on the mkromfs link lines.
 
 ## Layout
 

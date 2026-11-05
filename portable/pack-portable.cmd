@@ -280,8 +280,10 @@ if errorlevel 1 exit /b 1
 
 rem Store names as "texmfs/..." . Archiving "." stores "./...", which Explorer
 rem rejects: the window is empty and Extract All reports the archive invalid.
+rem The Windows bsdtar writes the zip; a GNU tar from an MSYS2 or Git Bash PATH
+rem cannot, so the full path is pinned.
 echo Writing "%ZIP%"
-tar.exe -a -cf "%ZIP%" -C "%STAGE%" bootstrap-portable.cmd miktex-portable.cmd version.txt LICENSE NOTICE.md texmfs
+"%SystemRoot%\System32\tar.exe" -a -cf "%ZIP%" -C "%STAGE%" bootstrap-portable.cmd miktex-portable.cmd version.txt LICENSE NOTICE.md texmfs
 if errorlevel 1 (
   echo tar failed.
   exit /b 1

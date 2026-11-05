@@ -42,7 +42,7 @@ if test ! -f .arm64-configured; then
       --disable-contrib --enable-fontconfig --disable-dbus \
       --disable-cups --enable-openjpeg --disable-gtk --with-jbig2dec \
       --with-libiconv=gnu --with-libidn --with-libpaper --with-system-libtiff \
-      --without-x --with-drivers=ALL --disable-compile-inits \
+      --without-x --with-drivers=ALL \
       2>&1 | tee "$ROOT/work/logs/configure.log"
     touch .arm64-configured
 fi

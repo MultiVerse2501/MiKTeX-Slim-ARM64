@@ -21,14 +21,14 @@ arch-scan.cmd        checks that sandbox binaries are ARM64
 coverage-scan.cmd    checks sandbox coverage against the official package database
 patches/             the ARM64 patch for the pinned MiKTeX commit
 recipes/             Biber and Ghostscript, which MiKTeX does not compile
-portable/            the pack script and the two launch scripts stored in the zip
+portable/            the pack and smoke-test scripts, and the two launch scripts stored in the zip
 ```
 
 `upstream/`, `build/`, `recipes/*/work/`, `recipes/*/dist/`, and `portable/dist/` are created by the build and are not stored in git.
 
 ## Use
 
-Build the zip with [BUILD.md](BUILD.md), or take the zip from a release. Its name is `miktex-portable-arm64-` plus this project's version and the MiKTeX version it was built from, currently `miktex-portable-arm64-v0.1-26.5.zip`. In Explorer, right-click it and choose **Extract All**, into any normal folder. The window shows `miktex-portable.cmd`, `bootstrap-portable.cmd`, `version.txt`, `LICENSE`, `NOTICE.md`, and `texmfs`. `version.txt` is `v0.1-26.5`.
+Build the zip with [BUILD.md](BUILD.md), or take the zip from a release. A packed zip can be exercised end to end with `portable\smoke-test.cmd`, which extracts, bootstraps, and compiles the checks below. Its name is `miktex-portable-arm64-` plus this project's version and the MiKTeX version it was built from, currently `miktex-portable-arm64-v0.1-26.5.zip`. In Explorer, right-click it and choose **Extract All**, into any normal folder. The window shows `miktex-portable.cmd`, `bootstrap-portable.cmd`, `version.txt`, `LICENSE`, `NOTICE.md`, and `texmfs`. `version.txt` is `v0.1-26.5`.
 
 Run `miktex-portable.cmd`.
 
