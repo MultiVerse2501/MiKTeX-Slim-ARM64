@@ -8,7 +8,7 @@ set "VSWHERE=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 set "VSINSTALL="
 for /f "usebackq delims=" %%I in (`"%VSWHERE%" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.ARM64 -property installationPath`) do set "VSINSTALL=%%I"
 if not defined VSINSTALL (
-  echo miktex-env: no Visual Studio install with the ARM64 C++ toolset.
+  >&2 echo miktex-env: no Visual Studio install with the ARM64 C++ toolset.
   exit /b 1
 )
 call "%VSINSTALL%\VC\Auxiliary\Build\vcvarsall.bat" arm64

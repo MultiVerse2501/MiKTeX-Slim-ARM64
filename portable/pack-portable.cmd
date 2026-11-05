@@ -341,6 +341,8 @@ if not defined HASH_OUT exit /b 1
 exit /b 0
 
 :samehash
+set "HASH_LEFT="
+set "HASH_OUT="
 call :hash "%~1"
 if errorlevel 1 exit /b 1
 set "HASH_LEFT=%HASH_OUT%"
@@ -350,8 +352,8 @@ if /i not "%HASH_LEFT%"=="%HASH_OUT%" exit /b 1
 exit /b 0
 
 :showhash
-echo   sandbox %HASH_LEFT%
-echo   recipe  %HASH_OUT%
+if defined HASH_LEFT echo   sandbox %HASH_LEFT%
+if defined HASH_OUT echo   recipe  %HASH_OUT%
 exit /b 0
 
 :expectversion

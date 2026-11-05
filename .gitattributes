@@ -1,0 +1,5 @@
+# The patch files are consumed byte-for-byte: recipes/*/sources.lock.json
+# SHA-256-verifies recipes/*/patches/*.patch, and fetch-upstream.cmd applies
+# patches/miktex-arm64.patch with git apply. Line-ending conversion on
+# checkout or commit would change the hashes and break the build.
+*.patch -text

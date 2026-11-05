@@ -27,6 +27,13 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def fetch(url: str, dest: Path) -> None:
+    req = urllib.request.Request(url, headers={"User-Agent": "miktex-slim-arm64-fetch"})
+    with urllib.request.urlopen(req, timeout=120) as resp, dest.open("wb") as out:
+        for chunk in iter(lambda: resp.read(1 << 20), b""):
+            out.write(chunk)
+
+
 def extract_stamp(gs: dict, patches: dict) -> str:
     lines = [f"archive {gs['sha256']}", f"extract {gs['extract_dir']}"]
     for name in sorted(patches):
@@ -46,7 +53,7 @@ def main() -> None:
     archive = DOWNLOADS / gs["archive"]
     if not archive.is_file() or sha256(archive) != gs["sha256"]:
         print(f"downloading {gs['url']}", flush=True)
-        urllib.request.urlretrieve(gs["url"], archive)
+        fetch(gs["url"], archive)
     got = sha256(archive)
     if got != gs["sha256"]:
         raise SystemExit(f"hash mismatch for {archive.name}: {got}")

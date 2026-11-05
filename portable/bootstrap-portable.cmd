@@ -77,11 +77,12 @@ if errorlevel 1 (
   goto fail
 )
 
-"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -Command "Set-Content -LiteralPath $env:TEMP\miktex-now.txt -Value ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -Encoding ascii"
+set "NOWFILE=%TEMP%\miktex-now-%RANDOM%.txt"
+"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -Command "Set-Content -LiteralPath $env:NOWFILE -Value ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -Encoding ascii"
 if errorlevel 1 goto fail
 set "NOW="
-set /p NOW=<"%TEMP%\miktex-now.txt"
-del /f /q "%TEMP%\miktex-now.txt" 2>nul
+set /p NOW=<"%NOWFILE%"
+del /f /q "%NOWFILE%" 2>nul
 if not defined NOW (
   echo Could not read the current Unix time.
   goto fail
