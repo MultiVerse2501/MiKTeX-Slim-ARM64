@@ -1,16 +1,21 @@
 """Paths, pinned-source helpers, and the Perl build environment.
 
 Stages 2 to 4 share one workspace under ``work/`` and never write into the
-MSYS2 Perl tree. ``INSTALL_BASE`` is ``work/local``.
+MSYS2 Perl tree. ``INSTALL_BASE`` is ``work/local``. The recipe-agnostic
+helpers come from ``recipes/_common.py`` and are re-exported here.
 """
 from pathlib import Path
-import hashlib
-import json
 import os
 import subprocess
 import sys
 
-from locate import ROOT, clangarm64, system_path, system_root
+_RECIPES = str(Path(__file__).resolve().parents[2])
+if _RECIPES not in sys.path:
+    sys.path.insert(0, _RECIPES)
+from _common import fetch as download  # noqa: F401 -- re-exported
+from _common import pe_record, require_python, sha256  # noqa: F401 -- re-exported
+from _common import read_json as _read_json
+from locate import ROOT, clangarm64, system_path, system_root  # noqa: F401 -- re-exported
 
 WORK = ROOT / "work"
 DOWNLOADS = WORK / "downloads"
@@ -20,21 +25,9 @@ LOGS = WORK / "logs"
 DIST = ROOT / "dist"
 
 
-def require_python() -> None:
-    if sys.version_info < (3, 12):
-        raise SystemExit("Python 3.12 or newer is required, found " + sys.version.split()[0] + ".")
-
-
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
 def read_json(name: str):
-    return json.loads((ROOT / name).read_text(encoding="utf-8"))
+    """Read a JSON file from the recipe root (``sources.lock.json`` etc.)."""
+    return _read_json(ROOT, name)
 
 
 def perl_env(*, msys: Path | None = None, site_perl: bool = True,

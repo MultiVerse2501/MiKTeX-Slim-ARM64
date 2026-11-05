@@ -9,13 +9,19 @@ from pathlib import Path
 import subprocess
 import sys
 
+_RECIPES = str(Path(__file__).resolve().parent)
+if _RECIPES not in sys.path:
+    sys.path.insert(0, _RECIPES)
+from _common import require_python
+
 ROOT = Path(__file__).resolve().parent
+# A new component: create recipes/<name>/ with a build.py that calls
+# _common.run_component (see biber or ghostscript), then list it here.
 COMPONENTS = ("biber", "ghostscript")
 
 
 def main() -> None:
-    if sys.version_info < (3, 12):
-        raise SystemExit("Python 3.12 or newer is required, found " + sys.version.split()[0] + ".")
+    require_python()
     argv = sys.argv[1:]
     if not argv or argv[0] in ("-h", "--help", "help"):
         print(__doc__.strip())
@@ -25,8 +31,7 @@ def main() -> None:
     name = argv[0]
     if name not in COMPONENTS:
         raise SystemExit(f"Unknown component {name!r}. Choose from: {', '.join(COMPONENTS)}")
-    script = ROOT / name / "build.py"
-    completed = subprocess.run([sys.executable, str(script), *argv[1:]], cwd=ROOT / name)
+    completed = subprocess.run([sys.executable, str(ROOT / name / "build.py"), *argv[1:]], cwd=ROOT / name)
     raise SystemExit(completed.returncode)
 
 

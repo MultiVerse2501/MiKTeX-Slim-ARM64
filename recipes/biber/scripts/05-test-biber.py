@@ -50,7 +50,7 @@ def main() -> None:
     dist_exe = ROOT / "dist" / "biber.exe"
     if not dist_exe.is_file():
         raise SystemExit(f"missing {dist_exe}; run stage 4 first")
-    bin_dir = miktex_bin()
+    bin_dir = miktex_bin(ROOT)
     pdflatex = bin_dir / "miktex-pdflatex.exe"
     installed = "--installed" in sys.argv
 

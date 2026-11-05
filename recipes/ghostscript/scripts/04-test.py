@@ -4,18 +4,17 @@ GS_LIB points at the extracted Resource tree, so the test does not need the
 architecture-neutral ghostscript package installed in MiKTeX.
 """
 from pathlib import Path
-import json
 import os
 import subprocess
 
-from locate import ROOT
+from locate import ROOT, read_json, system_path
 
 DIST = ROOT / "dist"
 SOURCE = ROOT / "work" / "source"
 
 
 def main() -> None:
-    expected = json.loads((ROOT / "sources.lock.json").read_text(encoding="utf-8"))["ghostscript"]["version"]
+    expected = read_json(ROOT, "sources.lock.json")["ghostscript"]["version"]
     exe = DIST / "mgs.exe"
     if not exe.is_file():
         raise SystemExit(f"missing {exe}; run the stage step first")
@@ -26,12 +25,11 @@ def main() -> None:
             lib.append(path.as_posix())
     if not lib:
         raise SystemExit(f"no Ghostscript library directories under {SOURCE}")
-    windows = Path(os.environ["SystemRoot"])
     env = os.environ.copy()
     for key in list(env):
         if key.startswith("GS_"):
             env.pop(key)
-    env["PATH"] = os.pathsep.join((str(DIST), str(windows / "System32"), str(windows)))
+    env["PATH"] = os.pathsep.join((str(DIST), system_path()))
     env["GS_LIB"] = os.pathsep.join(lib)
 
     def run(label: str, args: list[str], cwd: Path) -> str:

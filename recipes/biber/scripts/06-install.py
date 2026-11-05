@@ -9,14 +9,14 @@ import shutil
 import subprocess
 
 from common import DIST
-from locate import miktex_bin, system_path
+from locate import miktex_bin, ROOT, system_path
 
 
 def main() -> None:
     src = DIST / "biber.exe"
     if not src.is_file():
         raise SystemExit(f"missing {src}; run stage 4 first")
-    dest_dir = miktex_bin()
+    dest_dir = miktex_bin(ROOT)
     dest = dest_dir / "biber.exe"
     shutil.copy2(src, dest)
     print(f"copied {src} -> {dest}", flush=True)

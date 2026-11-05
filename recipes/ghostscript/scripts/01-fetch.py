@@ -5,33 +5,14 @@ working tree. The build links the MSYS2 copies instead. work/source/.extracted
 records the archive and patch hashes. A different pin replaces that tree.
 """
 from pathlib import Path
-import hashlib
-import json
 import shutil
-import sys
 import tarfile
-import urllib.request
 
-from locate import ROOT
+from locate import ROOT, fetch, read_json, require_python, sha256
 
 WORK = ROOT / "work"
 DOWNLOADS = WORK / "downloads"
 SOURCE = WORK / "source"
-
-
-def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def fetch(url: str, dest: Path) -> None:
-    req = urllib.request.Request(url, headers={"User-Agent": "miktex-slim-arm64-fetch"})
-    with urllib.request.urlopen(req, timeout=120) as resp, dest.open("wb") as out:
-        for chunk in iter(lambda: resp.read(1 << 20), b""):
-            out.write(chunk)
 
 
 def extract_stamp(gs: dict, patches: dict) -> str:
@@ -42,9 +23,8 @@ def extract_stamp(gs: dict, patches: dict) -> str:
 
 
 def main() -> None:
-    if sys.version_info < (3, 12):
-        raise SystemExit("Python 3.12 or newer is required, found " + sys.version.split()[0] + ".")
-    lock = json.loads((ROOT / "sources.lock.json").read_text(encoding="utf-8"))
+    require_python()
+    lock = read_json(ROOT, "sources.lock.json")
     gs = lock["ghostscript"]
     version = gs["version"]
     if gs["extract_dir"] != "ghostscript-" + version or version not in gs["archive"]:

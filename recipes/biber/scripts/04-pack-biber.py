@@ -10,19 +10,12 @@ Writes ``dist/biber.exe``, ``dist/binary-manifest.json``, and
 ``dist/linked-dlls.json``.
 """
 from pathlib import Path
-import hashlib
 import json
-import re
 import shutil
-import struct
-import subprocess
 import zipfile
 
-from common import CPAN, DIST, LOGS, PREFIX, WORK, perl_env, read_json, read_log, run
+from common import CPAN, DIST, LOGS, PREFIX, WORK, pe_record, perl_env, read_json, read_log, run
 from locate import clangarm64, system_root
-
-# llvm-readobj indents "Name:" by two spaces. A single leading space misses it.
-IMPORT_NAME = re.compile(r"^\s*Name:\s+(.+\.dll)\s*$", re.M | re.I)
 
 MODULES = [
     "deprecate",
@@ -56,25 +49,6 @@ def perl_runtime_dll(msys: Path) -> Path:
     if len(found) != 1:
         raise SystemExit(f"expected one perl5*.dll in {msys / 'bin'}, found {[p.name for p in found]}")
     return found[0]
-
-
-def inspect(path: Path, readobj: Path) -> dict:
-    raw = path.read_bytes()
-    assert raw[:2] == b"MZ", path
-    offset = struct.unpack_from("<I", raw, 0x3C)[0]
-    assert raw[offset:offset + 4] == b"PE\0\0", path
-    machine = struct.unpack_from("<H", raw, offset + 4)[0]
-    assert machine == 0xAA64, f"Not ARM64: {path} machine=0x{machine:04x}"
-    text = subprocess.check_output(
-        [str(readobj), "--coff-imports", str(path)],
-        text=True,
-        errors="replace",
-    )
-    return dict(
-        sha256=hashlib.sha256(raw).hexdigest(),
-        machine="ARM64 (0xAA64)",
-        imports=IMPORT_NAME.findall(text),
-    )
 
 
 def embedded_files(source: Path, perl: Path, env: dict) -> list[tuple[Path, str]]:
@@ -149,17 +123,17 @@ def main() -> None:
             command + ["--link=" + str(path) for path in links.values()] + [main_script],
             cwd=source, env=env, timeout=1800,
         )
-        records = {"biber.exe": inspect(exe, readobj)}
+        records = {"biber.exe": pe_record(exe, readobj)}
         with zipfile.ZipFile(exe) as bundle:
             for name in bundle.namelist():
                 if not name.lower().endswith((".dll", ".exe")):
                     continue
                 extracted = audit / Path(name).name
                 extracted.write_bytes(bundle.read(name))
-                records[name] = inspect(extracted, readobj)
+                records[name] = pe_record(extracted, readobj)
         included = {Path(name).name.lower() for name in records}
         for boot in (PREFIX / "bin" / "parl.exe", perl_dll):
-            records["bootstrap/" + boot.name] = inspect(boot, readobj)
+            records["bootstrap/" + boot.name] = pe_record(boot, readobj)
         included.add(perl_dll.name.lower())
         pending = [dll for record in records.values() for dll in record["imports"]]
         missing = []

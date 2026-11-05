@@ -5,9 +5,8 @@ left in place.
 """
 from pathlib import Path
 import sys
-import urllib.request
 
-from common import DOWNLOADS, read_json, require_python, sha256
+from common import DOWNLOADS, download, read_json, require_python, sha256
 
 
 def fetch(name: str, url: str, want: str, dest: Path) -> None:
@@ -15,13 +14,7 @@ def fetch(name: str, url: str, want: str, dest: Path) -> None:
         print(f"ok (cached)   {name}")
         return
     print(f"downloading   {name}  <- {url}")
-    req = urllib.request.Request(url, headers={"User-Agent": "miktex-slim-arm64-fetch"})
-    with urllib.request.urlopen(req, timeout=120) as resp, dest.open("wb") as out:
-        out.write(resp.read())
-    got = sha256(dest)
-    if got != want:
-        dest.unlink(missing_ok=True)
-        raise SystemExit(f"SHA256 MISMATCH {name}\n  want {want}\n  got  {got}")
+    download(url, dest, want)
     print(f"verified      {name}")
 
 
