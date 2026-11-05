@@ -276,6 +276,12 @@ copy /y "%REPO%\LICENSE" "%STAGE%\LICENSE" >nul
 if errorlevel 1 exit /b 1
 copy /y "%REPO%\NOTICE.md" "%STAGE%\NOTICE.md" >nul
 if errorlevel 1 exit /b 1
+copy /y "%HERE%\register-portable.cmd" "%STAGE%\register-portable.cmd" >nul
+if errorlevel 1 exit /b 1
+copy /y "%HERE%\unregister-portable.cmd" "%STAGE%\unregister-portable.cmd" >nul
+if errorlevel 1 exit /b 1
+copy /y "%HERE%\user-path.ps1" "%STAGE%\user-path.ps1" >nul
+if errorlevel 1 exit /b 1
 >"%STAGE%\version.txt" echo %RELEASE%
 
 rem Store names as "texmfs/..." . Archiving "." stores "./...", which Explorer
@@ -283,7 +289,7 @@ rem rejects: the window is empty and Extract All reports the archive invalid.
 rem The Windows bsdtar writes the zip; a GNU tar from an MSYS2 or Git Bash PATH
 rem cannot, so the full path is pinned.
 echo Writing "%ZIP%"
-"%SystemRoot%\System32\tar.exe" -a -cf "%ZIP%" -C "%STAGE%" bootstrap-portable.cmd miktex-portable.cmd version.txt LICENSE NOTICE.md texmfs
+"%SystemRoot%\System32\tar.exe" -a -cf "%ZIP%" -C "%STAGE%" bootstrap-portable.cmd miktex-portable.cmd register-portable.cmd unregister-portable.cmd user-path.ps1 version.txt LICENSE NOTICE.md texmfs
 if errorlevel 1 (
   echo tar failed.
   exit /b 1

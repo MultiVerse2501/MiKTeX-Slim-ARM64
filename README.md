@@ -21,7 +21,7 @@ arch-scan.cmd        checks that sandbox binaries are ARM64
 coverage-scan.cmd    checks sandbox coverage against the official package database
 patches/             the ARM64 patch for the pinned MiKTeX commit
 recipes/             Biber and Ghostscript, which MiKTeX does not compile
-portable/            the pack and smoke-test scripts, and the two launch scripts stored in the zip
+portable/            the pack and smoke-test scripts, and the launch and register scripts stored in the zip
 ```
 
 `upstream/`, `build/`, `recipes/*/work/`, `recipes/*/dist/`, and `portable/dist/` are created by the build and are not stored in git.
@@ -50,9 +50,15 @@ Hello ARM64.
 
 Later runs of `miktex-portable.cmd` open the prompt directly, once both `texmfs\install\miktex\config\miktexstartup.ini` and `texmfs\install\miktex\config\bootstrap-complete.txt` exist. If the first run stops before the marker file exists, run `miktex-portable.cmd` again.
 
-Downloaded packages, font maps, and format files stay under `texmfs\config` and `texmfs\data`. Move or copy the whole extracted folder together. The script sets `MIKTEX_COMMONSTARTUPFILE` and `MIKTEX_USERSTARTUPFILE` to this tree, so another MiKTeX install on the same PC does not take over the prompt.
+The prompt keeps the toolkit to itself. To call `pdflatex`, `biber`, and the rest from any shell or build tool, run `register-portable.cmd` in the extracted folder once. It appends the bin directory to your user `Path` — no admin rights, the system `Path` is not touched, and the entry is recorded in `texmfs\registered-user-path.txt`. New terminals see the change immediately; open ones need a restart. `-Front` puts the entry first instead of last, ahead of any other TeX on the `Path`. `unregister-portable.cmd` removes the entry again.
+
+Downloaded packages, font maps, and format files stay under `texmfs\config` and `texmfs\data`. Move or copy the whole extracted folder together; move it into its final place before the first run, because the bootstrap writes absolute paths into the tree's fontconfig configuration. The script sets `MIKTEX_COMMONSTARTUPFILE` and `MIKTEX_USERSTARTUPFILE` to this tree, so another MiKTeX install on the same PC does not take over the prompt.
 
 `texify` starts `miktex-bibtex` only. On a biblatex document, run `biber.exe` between LaTeX passes. LuaJIT's interpreter is included and its JIT stays off. LuaTeX still uses Lua 5.3. The programs are unsigned: SmartScreen may warn, and Smart App Control blocks them when that feature is turned on.
+
+## Uninstall
+
+If you ran `register-portable.cmd`, run `unregister-portable.cmd` first; it removes the user `Path` entry it recorded. Then delete the extracted folder. Nothing else was placed on the machine: no registry keys, no services, no Start Menu entries. The folder holds every package, format file, and setting. A few kilobytes of font-index cache may remain under `%LOCALAPPDATA%\fontconfig\cache` and can be deleted with it.
 
 ## Not included
 

@@ -121,7 +121,8 @@ def extract(zip_path: Path) -> None:
 
 def check_layout(run: Path, versions: dict[str, str]) -> None:
     for name in ("miktex-portable.cmd", "bootstrap-portable.cmd", "version.txt",
-                 "LICENSE", "NOTICE.md"):
+                 "LICENSE", "NOTICE.md",
+                 "register-portable.cmd", "unregister-portable.cmd", "user-path.ps1"):
         if not (run / name).is_file():
             raise SmokeFail(f"the zip does not contain {name}")
     if not (run / "texmfs" / "install" / "miktex" / "bin" / "arm64" / "initexmf.exe").is_file():
